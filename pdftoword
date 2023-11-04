@@ -1,0 +1,27 @@
+import org.apache.pdfbox.pdmodel.PDDocument;
+import org.apache.pdfbox.text.PDFTextStripper;
+import org.apache.poi.xwpf.usermodel.XWPFDocument;
+import org.apache.poi.xwpf.usermodel.XWPFParagraph;
+import java.io.FileInputStream;
+import java.io.FileOutputStream;
+import java.io.IOException;
+
+public class PDFToWordConverter {
+    public static void main(String[] args) {
+        try {
+            PDDocument pdfDocument = PDDocument.load(new FileInputStream("input.pdf"));
+            XWPFDocument wordDocument = new XWPFDocument();
+            XWPFParagraph paragraph = wordDocument.createParagraph();
+            PDFTextStripper pdfTextStripper = new PDFTextStripper();
+            String pdfText = pdfTextStripper.getText(pdfDocument);
+            paragraph.createRun().setText(pdfText);
+            FileOutputStream out = new FileOutputStream("output.docx");
+            wordDocument.write(out);
+            out.close();
+            pdfDocument.close();
+            System.out.println("Conversion complete.");
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+}
